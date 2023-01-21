@@ -1,0 +1,24 @@
+1. In Azure Portal: Create an Azure App Service
+2. Local: Create a Project using VS.NET
+3. Publish to App Service.
+4. Open the URL of App Service
+
+5. Create a Staging Slot
+6. Publish to Staging Slot
+7. View the Staging Slot URL
+8. Swap the Staging and Production
+
+9. Add to appsettings.json: "k1": "V1" 
+10. Show the value in home page
+11. Publish to Slot and view the value o/p in browser
+12. Using Portal change the value to "k1": "v1 from slot" in Configuration of Slot.
+13. Open slot URL in browser and see the value is now changed
+14. Using Portal change the value to "k1": "v1 from production" in Configuration.
+Note: After swaping staging with production, the values of the Keys should not swap.
+
+15. Create a New App Service Plan in same Resource Group and Location
+16. Change the plan of App Service Production Slot to new plan.
+
+17. Delete the Staging Slot
+18. Change the App Service Plan to FREE
+19. Delete the extra plan which was used by App Service 

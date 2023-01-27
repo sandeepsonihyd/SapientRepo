@@ -5,3 +5,9 @@
 2. Write an Azure Function which can create Thumbnail of the image. Upload the same in Storage Blob Container with Thumbnail as suffix. Thumbnail filename format: <GUID>-Thumbnail.<ext>
 
 3. Show the Thumbnail in Grid of Products.
+
+4. CREATE AN ARCHITECT DIAGRAM.
+
+Learning:
+1. Post to Message into Queue
+2. Upload Files in Blob Container

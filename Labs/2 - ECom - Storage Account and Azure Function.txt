@@ -1,0 +1,7 @@
+1. Provide facility to add CatalogItem 
+	a) Values of CatalogBrand and CatalogType coming from dropdownlist. 
+	b) Use FileUpload component for the catalog item. The uploaded file should store in Storage Blob container with GUID and retain the extension. URL of same should be saved in CatalogItem Table.
+
+2. Write an Azure Function which can create Thumbnail of the image. Upload the same in Storage Blob Container with Thumbnail as suffix. Thumbnail filename format: <GUID>-Thumbnail.<ext>
+
+3. Show the Thumbnail in Grid of Products.

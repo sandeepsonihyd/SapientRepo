@@ -1,0 +1,5 @@
+1. Product Catalog API should be Wrapped in API Management
+
+2. Web APP will call API management and that will forward the request to Product Catalog API.
+
+3. JWT Token should be validated.

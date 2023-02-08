@@ -1,0 +1,22 @@
+1. Add functionality to update the product in product catalog.
+
+2. Create a Service Bus 
+	a) Topic = EComTopic,
+	b) ProductSubscription with Filter = "Category=Product"
+
+3. In CatalogBO - Post into EComTopic, message (object of productcatalog which got changed). Category="Product"
+	a) ProductController Project
+              services.AddSingleton<ServiceBusClient>(x =>
+              {
+                 return new ServiceBusClient(Configuration["ServiceBusConnectionString"]);
+              });
+	b) CatalogBO::Update 
+		Inject ServiceBusClient into BO Contructor 
+		Use ServiceBusClient to Post a message to Topic (EComTopic)
+
+4. In ShoppingCart - Subscribe to the "ProductSubscription"
+	a) On Receiving message in MessageHandler - Iterate through Baskets (of all users) and iterate through all Items of the basket and update price of item if it matches to the one in subscription.
+           TIP: Use Singleton Class and its Method as Handler.
+
+
+

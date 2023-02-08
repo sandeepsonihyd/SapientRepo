@@ -1,0 +1,119 @@
+version: '3.4'
+networks:
+  frontend:
+  backend:
+
+services:
+#MVC Client Configuration
+  webmvc:
+    image: eshopdemo/webmvc
+    build:
+      context: .
+      dockerfile: WebApp/WebMVC/Dockerfile
+    environment:
+      CatalogUrl: "http://productcatalog.api"
+      ShoppingCartUrl: "http://shoppingbasket.api"
+      IdentityServerUrl: "https://www.bestdotnettraining.com:44430"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "https://+:443;http://+:80"
+      ASPNETCORE_HTTPS_PORT: "443"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "Password@123"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/root/.aspnet/https/aspnetapp.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__AllowInvalid: "true"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - productcatalog.api
+      - shoppingbasket.api
+      - www.bestdotnettraining.com
+    ports:
+      - "5100:80"
+      - "5101:443"
+    networks:
+      - frontend
+
+#Product Catalog Configuration
+  productcatalog.api:
+    image: eshopdemo/productcatalogapi
+    build:
+      context: .
+      dockerfile: Services/ProductCatalog/ProductCatalog.API/Dockerfile
+    environment:
+      ConnectionStrings__ProductCatalogContext: "server=mssqlserver;database=CatalogDB;Uid=sa;Password=Password_*123"
+      IdentityServerUrl: "https://www.bestdotnettraining.com:44430"
+    depends_on:
+      - mssqlserver
+      - www.bestdotnettraining.com
+    ports:
+      - "5200:80"
+    networks:
+      - frontend
+      - backend
+
+#Shopping Basket Configuration
+  shoppingbasket.api:
+    image: eshopdemo/shoppingbasketapi
+    build:
+      context: .
+      dockerfile: Services/ShoppingBasket/ShoppingBasket.API/Dockerfile
+    environment:
+      RedisConnectionString: "redis"
+      IdentityServerUrl: "https://www.bestdotnettraining.com:44430"
+    depends_on:
+      - redis
+      - www.bestdotnettraining.com
+    ports:
+      - "5300:80"
+    networks:
+      - frontend
+      - backend
+
+#Identity Server Configuration
+  www.bestdotnettraining.com:
+    image: eshopdemo/identityserverapi
+    build:
+        context: .
+        dockerfile: Services/Identity/IdentityServer.API/Dockerfile
+    environment:
+         MVCClientUrl: "https://webmvc"
+         ConnectionStrings__DefaultConnection: "server=mssqlserver;database=IdentityDB;Uid=sa;Password=Password_*123"
+         ASPNETCORE_ENVIRONMENT: "Development"
+         ASPNETCORE_URLS: "https://+:44430;http://+:5000"
+         ASPNETCORE_HTTPS_PORT: "44430"
+         ASPNETCORE_Kestrel__Certificates__Default__Password: "dss@4321"
+         ASPNETCORE_Kestrel__Certificates__Default__Path: "/root/.aspnet/https/BDT.pfx"
+         #ASPNETCORE_Kestrel__Certificates__Default__AllowInvalid: "true"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    ports:
+         - "44430:44430"
+         - "5000:5000"
+    networks:
+      - frontend
+      - backend
+    depends_on:
+     - mssqlserver
+
+#SQL Server Configuration
+  mssqlserver:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    ports:
+      - "1433" 
+    environment:
+      - SA_PASSWORD=Password_*123
+      - ACCEPT_EULA=Y
+    volumes:
+     - sqlvolume:/var/opt/mssql
+    networks:
+      - backend
+
+#Redis Configuration
+  redis:
+    image: redis
+    networks:
+      - backend
+
+volumes:
+  sqlvolume:

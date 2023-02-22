@@ -1,0 +1,20 @@
+Notification Service:
+=================
+A user can register for a price change on a product.
+Email notification should be sent to all users when the price changes.
+
+CosmosDB
+=========
+NotifyProduct: { key: userid, Value: [{product info, notifyPrice:100},{product info, notifyPrice:150} ]
+UserInfo(userid,emaild)
+
+WebUI: 
+=========
+Should have button for each Product and when clicked should insert records in above tables. 
+Ask for New Price and Email-ID.
+
+LogicApp:
+=========
+Triggers when the Sql Table CatalogItem changes. (Get CatalogItemId, Price ....)
+1. Get all UserIds who have CatalogItem in thier NotifyProduct Document.
+2. Send Email to that User (email id should be fetched from UserInfo) if the New Price is less that Notify Price.
